@@ -1,101 +1,144 @@
+// pages/page.tsx
+"use client";
+import { useState, useEffect } from "react";
+import {
+	ChartBarIcon,
+	TicketIcon,
+	CurrencyDollarIcon,
+} from "@heroicons/react/24/outline";
 import Image from "next/image";
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+export default function Dashboard() {
+	const [currentImage, setCurrentImage] = useState(0);
+	const images = [
+		"/images/Wisata1.jpg",
+		"/images/Wisata2.jpg",
+		"/images/Wisata3.jpg",
+	];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+	// Otomatis ganti gambar setiap 5 detik
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setCurrentImage((prev) => (prev + 1) % images.length);
+		}, 5000);
+		return () => clearInterval(interval);
+	}, []);
+
+	const stats = [
+		{ id: 1, name: "Total Tiket", value: "1,234", icon: TicketIcon },
+		{
+			id: 2,
+			name: "Total Transaksi",
+			value: "Rp 456,7 Jt",
+			icon: CurrencyDollarIcon,
+		},
+		{ id: 3, name: "Tiket Terjual Hari Ini", value: "89", icon: ChartBarIcon },
+	];
+
+	return (
+		<div className="min-h-screen bg-sky-50">
+			{/* Image Slider */}
+			<div className="relative h-96 overflow-hidden z-0">
+				{images.map((img, index) => (
+					<div
+						key={index}
+						className={`absolute inset-0 transition-opacity duration-1000 ${
+							index === currentImage ? "opacity-100" : "opacity-0"
+						}`}
+					>
+						<Image
+							src={img}
+							alt={`Banner Wisata ${index + 1}`}
+							layout="fill"
+							objectFit="cover"
+							quality={75}
+							placeholder="blur"
+							blurDataURL="data:image/png;base64,..." // Ganti dengan base64 placeholder
+						/>
+					</div>
+				))}
+				<div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+					{images.map((_, index) => (
+						<button
+							key={index}
+							className={`w-3 h-3 rounded-full ${
+								index === currentImage ? "bg-sky-600" : "bg-white"
+							}`}
+							onClick={() => setCurrentImage(index)}
+						/>
+					))}
+				</div>
+			</div>
+
+			{/* Main Content */}
+			<main className="container mx-auto px-4 py-8">
+				<div className="bg-white rounded-lg shadow-md p-6 mb-8">
+					<h2 className="text-2xl font-semibold text-sky-600 mb-4">
+						Selamat Datang di OrcaTicketing
+					</h2>
+					<p className="text-gray-600 leading-relaxed">
+						Kelola tiket dan transaksi Anda dengan mudah melalui dashboard ini.
+						Pantau perkembangan penjualan, lakukan manajemen tiket, dan dapatkan
+						insight bisnis secara real-time.
+					</p>
+					<div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div className="bg-sky-50 p-4 rounded-lg">
+							<h3 className="font-semibold text-sky-600 mb-2">Fitur Terbaru</h3>
+							<p className="text-sm text-gray-600">
+								Sistem pembaruan tiket real-time dan notifikasi instan
+							</p>
+						</div>
+						<div className="bg-sky-50 p-4 rounded-lg">
+							<h3 className="font-semibold text-sky-600 mb-2">
+								Promo Bulan Ini
+							</h3>
+							<p className="text-sm text-gray-600">
+								Dapatkan diskon 15% untuk pembelian tiket pertama
+							</p>
+						</div>
+					</div>
+				</div>
+
+				{/* Stats Grid */}
+				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+					{stats.map((stat) => (
+						<div
+							key={stat.id}
+							className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+						>
+							<stat.icon className="h-12 w-12 text-sky-600 mb-4" />
+							<h3 className="text-lg font-semibold text-gray-700">
+								{stat.name}
+							</h3>
+							<p className="text-3xl font-bold text-sky-600 mt-2">
+								{stat.value}
+							</p>
+						</div>
+					))}
+				</div>
+			</main>
+
+			{/* Footer */}
+			<footer className="bg-sky-600 text-white py-6 mt-12">
+				<div className="container mx-auto px-4 text-center">
+					<div className="flex flex-col md:flex-row justify-between items-center">
+						<p className="mb-4 md:mb-0">
+							&copy; 2024 OrcaTicketing. All rights reserved.
+						</p>
+						<div className="flex space-x-6">
+							<a href="#" className="hover:text-sky-200 transition-colors">
+								Kebijakan Privasi
+							</a>
+							<a href="#" className="hover:text-sky-200 transition-colors">
+								Syarat & Ketentuan
+							</a>
+							<a href="#" className="hover:text-sky-200 transition-colors">
+								Kontak
+							</a>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+	);
 }
